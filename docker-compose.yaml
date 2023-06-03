@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  restreamer:
+    image: datarhei/restreamer:latest
+    restart: always
+    volumes:
+      - /opt/restreamer/config:/core/config
+      - /opt/restreamer/data:/core/data
+    ports:
+      - 8080:8080
+      - 8181:8181
+      - 1935:1935
+      - 1936:1936
+      - 6000:6000/udp
