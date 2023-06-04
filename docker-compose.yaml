@@ -12,3 +12,13 @@ services:
       - 1935:1935
       - 1936:1936
       - 6000:6000/udp
+  mysql:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: restreamer
+      MYSQL_USER: restreamer
+      MYSQL_PASSWORD: restreamer
+    volumes:
+      - /opt/restreamer/mysql:/var/lib/mysql
