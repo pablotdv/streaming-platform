@@ -6,6 +6,13 @@ type StreamerPostRequest struct {
 
 type StreamerPostResponse struct {
 	Name      string `json:"name"`
-	UrlStream string `json:"url_stream"`
-	UrlPlayer string `json:"url_player"`
+	UrlStream string `json:"urlStream"`
+	UrlPlayer string `json:"urlPlayer"`
+}
+
+type StreamerGetResponse struct {
+	ID        uint   `json:"id"`
+	Name      string `json:"name"`
+	UrlStream string `json:"urlStream"`
+	UrlPlayer string `json:"urlPlayer"`
 }

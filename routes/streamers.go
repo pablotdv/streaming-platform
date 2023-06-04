@@ -2,6 +2,7 @@ package routes
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -13,11 +14,22 @@ import (
 )
 
 func GetStreamers(c *gin.Context) {
-	c.JSON(200, gin.H{})
+	var streamers []schemas.StreamerGetResponse
+	if err := data.Db.Model(&models.Streamer{}).Select("id, name, url_stream, url_player").Find(&streamers).Error; err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+	c.JSON(http.StatusOK, streamers)
 }
 
 func GetStreamer(c *gin.Context) {
-	c.JSON(200, gin.H{})
+	id, _ := strconv.Atoi(c.Param("id"))
+	var streamer schemas.StreamerGetResponse
+	if err := data.Db.Model(&models.Streamer{}).Where("id = ?", id).Select("id, name, url_stream, url_player").Find(&streamer).Error; err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+	c.JSON(http.StatusOK, streamer)
 }
 
 func PostStreamer(c *gin.Context) {

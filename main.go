@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/pablotdv/streaming-platform/data"
 	"github.com/pablotdv/streaming-platform/models"
@@ -20,6 +21,12 @@ func init() {
 
 func main() {
 	router := gin.Default()
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowCredentials: true,
+		AllowHeaders:     []string{"Authorization", "Content-Type"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"},
+	}))
 	api := router.Group("/api")
 	{
 		streamers := api.Group("/streamers")
