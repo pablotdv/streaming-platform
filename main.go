@@ -1,20 +1,36 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
+	"github.com/gin-gonic/gin"
+	"github.com/pablotdv/streaming-platform/data"
+	"github.com/pablotdv/streaming-platform/models"
+	"github.com/pablotdv/streaming-platform/routes"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
-func main() {
-	req, err := http.NewRequest("GET", "http://localhost:8080/api/v3/process/restreamer-ui:ingest:60f63649-0528-430c-b852-5fa076135ea7", nil)
+func init() {
+	var err error
+	data.Db, err = gorm.Open(mysql.Open("restreamer:restreamer@tcp(127.0.0.1:3306)/restreamer?parseTime=true"), &gorm.Config{})
 	if err != nil {
-		fmt.Println(err)
+		panic("failed to connect database")
 	}
-	req.Header.Add("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleGkiOjYwMCwiZXhwIjoxNjg1ODI2NjAzLCJpYXQiOjE2ODU4MjYwMDMsImlzcyI6ImRhdGFyaGVpLWNvcmUiLCJqdGkiOiJmMDQ4NTc0Ny05NTMyLTQyZWUtOWVmYy1mZDIwMjZkOGU1MDciLCJzdWIiOiJhZG1pbiIsInVzZWZvciI6ImFjY2VzcyJ9.OzEbTLYyl_4DvOc3lxvOz6KQm0bwlwATvsm1QckZcdc")
+	data.Db.AutoMigrate(&models.Streamer{})
+}
 
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		fmt.Println(err)
+func main() {
+	router := gin.Default()
+	api := router.Group("/api")
+	{
+		streamers := api.Group("/streamers")
+		{
+			streamers.GET("", routes.GetStreamers)
+			streamers.GET(":id", routes.GetStreamer)
+			streamers.POST("", routes.PostStreamer)
+			streamers.PUT(":id", routes.PutStreamer)
+			streamers.DELETE(":id", routes.DeleteStreamer)
+		}
 	}
-	fmt.Println(resp)
+
+	router.Run(":3001")
 }

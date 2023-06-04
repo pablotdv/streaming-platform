@@ -13,8 +13,10 @@ services:
       - 1936:1936
       - 6000:6000/udp
   mysql:
-    image: mysql:5.7
+    image: mysql:latest
     restart: always
+    ports:
+      - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: restreamer
